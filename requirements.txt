@@ -1,0 +1,4 @@
+Jinja2==3.1.2
+markdown==3.4.3
+python-frontmatter==1.0.0
+wutch==1.0.12
