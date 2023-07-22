@@ -1,0 +1,17 @@
+{% extends "_base.html.j2" %}
+
+{% block body %}
+<h2>{{ title }}</h2>
+{{ content }}
+
+<h3>Posts</h3>
+<ol id="posts-list">
+  {% for post in posts %}
+  <li>
+    <span class="post-date">{{ post["date"].strftime('%b %e, %Y') }}</span>
+    <a href="{{ post["href"] }}">{{ post["title"] }}</a>
+  </li>
+  {% endfor %}
+</ol>
+
+{% endblock %}
