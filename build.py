@@ -152,6 +152,12 @@ def build():
         for content in CONTENT[content_type]:
             build_content(template, content, global_vars)
 
+    # Copy misc Cloudflare files
+    src = "_redirects"
+    dest = os.path.join(BUILD_DIR, src)
+    print(f"Copying {dest}")
+    copy_file(src, dest)
+
     print("Build finished")
 
 
