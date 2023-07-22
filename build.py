@@ -64,7 +64,7 @@ def build_content(template, content, global_vars):
     try:
         html = template.render(**jinja_vars)
         create_parent_dirs(build_path)  # Can't write file unless its directory exists
-        with open(build_path, "w") as f:
+        with open(build_path + ".html", "w") as f:
             f.write(html)
     except Exception as e:
         print(f"ERROR: Failed to build {build_path}: {e}")
@@ -79,7 +79,7 @@ def get_built_path(parent_dir, src_path, custom_extension=None):
     content/assets/images/foo.jpg => assets/images/foo.jpg
     """
     dest = Path(src_path.replace(parent_dir, ""))
-    if custom_extension:
+    if custom_extension is not None:
         return str(dest.with_suffix(custom_extension))
     return str(dest)
 
@@ -92,9 +92,12 @@ def load_content_files(content_type):
         loaded = frontmatter.load(file)
         front_matter = loaded.metadata
 
+        # Remove the file extension from links to built content, matching Cloudflare
+        href = get_built_path(dir, file, custom_extension="")
+
         content = {
             "source": file,
-            "href": get_built_path(dir, file, custom_extension=".html"),
+            "href": href,
             "content": markdown.markdown(
                 loaded.content, extensions=MARKDOWN_EXTENSIONS
             ),

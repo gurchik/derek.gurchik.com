@@ -9,4 +9,4 @@ Outside of work, I am studying and practicing film photography. I'm inspired by 
 ### Links
 
 * Contact me at `blog @ (my last name) .com`
-* [My homelab](/homelab.html)
+* [My homelab](/homelab)

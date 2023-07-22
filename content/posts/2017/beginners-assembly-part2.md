@@ -4,7 +4,7 @@ summary: "In the final part of this series we will use our new knowledge to impl
 date: 2017-02-13
 ---
 
-In the [previous part of this series](/2017-02-12/beginners-assembly-part1/) the main topics of x86 assembly programming such as the call stack x86 calling convention were introduced. In this final part we will apply that knowledge to write our RPN calculator.
+In the [previous part of this series](/2017/beginners-assembly-part1) the main topics of x86 assembly programming such as the call stack x86 calling convention were introduced. In this final part we will apply that knowledge to write our RPN calculator.
 
 The complete code of our calculator can be found [here](https://gist.github.com/gurchik/9dff75a67710207e16cd6a8531393ccf). It is heavily commented and may serve as a sufficient learning resource for those of you with some knowledge of assembly already. Now, lets get started.
 
