@@ -1,4 +1,5 @@
 ---
+template: "page.html.j2"
 title: "My homelab"
 ---
 

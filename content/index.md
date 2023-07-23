@@ -1,6 +1,8 @@
 ---
-title: "Hi, I'm Derek Gurchik"
+template: "index.html.j2"
 ---
+
+## Hi, I'm Derek Gurchik
 
 I am a software engineer in NYC. I enjoy working on infrastructure automation, developer tools, and helping startups transition to highly available architectures with robust monitoring and incident response. I am currently a DevOps Engineer at [Propel, Inc.](https://www.joinpropel.com/) improving the financial health of low-income Americans. 
 

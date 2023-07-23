@@ -10,7 +10,8 @@ import frontmatter
 
 BUILD_DIR = "build/"
 CONTENT_DIR = "content/"
-THEME_DIR = "theme/"
+TEMPLATES_DIR = "templates/"
+STATIC_DIR = "static/"
 MARKDOWN_EXTENSIONS = [
     # https://python-markdown.github.io/extensions/
     "fenced_code",
@@ -19,19 +20,26 @@ MARKDOWN_EXTENSIONS = [
     # There are a lot more at https://facelessuser.github.io/pymdown-extensions/
     # but I'm choosing to not install that right now.
 ]
-CONTENT = {}
 REQUIRED_FRONTMATTER = {
-    "pages": ["title"],
-    "posts": ["title", "date"],
-    "index": ["title"],
+    "index.html.j2": [],
+    "page.html.j2": ["title"],
+    "post.html.j2": ["title", "date"],
 }
-
-jinja_loader = FileSystemLoader(THEME_DIR)
-jinja = Environment(loader=jinja_loader, autoescape=False)
 
 
 class MissingFrontmatter(Exception):
     pass
+
+
+def create_parent_dirs(path):
+    parent_dir = os.path.dirname(path)
+    if not os.path.exists(parent_dir):
+        os.makedirs(parent_dir)
+
+
+def copy_file(src, dest):
+    create_parent_dirs(dest)  # Can't copy unless its dir exists
+    shutil.copy(src, dest)
 
 
 def collect_files(dir):
@@ -42,127 +50,93 @@ def collect_files(dir):
     return ret
 
 
-def prepare_build_dir():
+def copy_files_from_dir(src, dest):
+    for file in collect_files(src):
+        new_path = Path(file.replace(src, dest))  # static/foo.txt --> build/foo.txt
+        copy_file(file, new_path)
+        print(f"Copied {new_path}")
+
+
+def parse_content_file(path):
+    loaded = frontmatter.load(path)
+    front_matter = loaded.metadata
+    content = markdown.markdown(loaded.content, extensions=MARKDOWN_EXTENSIONS)
+    return front_matter, content
+
+
+def render_template(template, jinja_vars, dest):
+    html = template.render(**jinja_vars)
+    create_parent_dirs(dest)  # Can't save unless its dir exists
+    with open(dest, "w") as f:
+        f.write(html)
+    print(f"Saved {dest}")
+
+
+def load_content_from_dir(dir):
+    ret = []
+
+    for file in collect_files(dir):
+        front_matter, content = parse_content_file(file)
+
+        if "template" not in front_matter:
+            raise MissingFrontmatter(
+                f"Failed to load {file}: missing required frontmatter field 'template'"
+            )
+
+        for required_field in REQUIRED_FRONTMATTER[front_matter["template"]]:
+            if required_field not in front_matter:
+                raise MissingFrontmatter(
+                    f"Failed to load {file}: missing required frontmatter field '{required_field}'"
+                )
+
+        # Remove the file extension from links to built content, matching Cloudflare
+        # content/my_page.md => /my_page
+        url = str(Path(file.replace(dir, "/")).with_suffix(""))
+
+        ret.append(
+            {
+                "content": content,
+                **front_matter,
+                "url": url,
+            }
+        )
+
+    return ret
+
+
+if __name__ == "__main__":
+    # Prepare the build directory
     if os.path.exists(BUILD_DIR):
         shutil.rmtree(BUILD_DIR, ignore_errors=True)
     os.mkdir(BUILD_DIR)
 
+    # Copy static assets
+    copy_files_from_dir(STATIC_DIR, BUILD_DIR)
 
-def create_parent_dirs(path):
-    parent_dir = os.path.dirname(path)
-    if not os.path.exists(parent_dir):
-        os.makedirs(parent_dir)
+    # Load the content in memory. We can't render any content until all of it has been
+    # loaded because we need it to populate the global variables.
+    content = load_content_from_dir(CONTENT_DIR)
 
+    global_vars = {
+        "posts": [c for c in content if c["template"] == "post.html.j2"],
+        "pages": [c for c in content if c["template"] == "page.html.j2"],
+    }
+    # Sort the content in a way that is most helpful for a template
+    # TODO: for building a nav menu, we could sort by a "nav_position" key or similar
+    global_vars["posts"].sort(key=lambda post: post["date"])
 
-def build_content(template, content, global_vars):
-    dest = content["href"][1:]  # won't work properly with the leading slash
-    build_path = os.path.join(BUILD_DIR, dest)
-    print(f"Building {build_path}")
+    # Finally, build each of the loaded content files
+    jinja_loader = FileSystemLoader(TEMPLATES_DIR)
+    jinja = Environment(loader=jinja_loader, autoescape=False)
+    for data in content:
+        # /index => build/index.html
+        path = os.path.join(BUILD_DIR, data["url"][1:]) + ".html"
 
-    jinja_vars = {**global_vars, **content}
-
-    try:
-        html = template.render(**jinja_vars)
-        create_parent_dirs(build_path)  # Can't write file unless its directory exists
-        with open(build_path + ".html", "w") as f:
-            f.write(html)
-    except Exception as e:
-        print(f"ERROR: Failed to build {build_path}: {e}")
-
-
-def get_built_path(parent_dir, src_path, custom_extension=None):
-    """Get the path for the src file relative to the build directory. The file
-    organization will mirror your organization within the parent directory.
-
-    Examples:
-    theme/assets/style.css => assets/style.css
-    content/assets/images/foo.jpg => assets/images/foo.jpg
-    """
-    dest = Path(src_path.replace(parent_dir, ""))
-    if custom_extension is not None:
-        return str(dest.with_suffix(custom_extension))
-    return str(dest)
-
-
-def load_content_files(content_type):
-    dir = os.path.join(CONTENT_DIR, content_type)
-    contents = []
-
-    for file in collect_files(dir):
-        loaded = frontmatter.load(file)
-        front_matter = loaded.metadata
-
-        # Remove the file extension from links to built content, matching Cloudflare
-        href = get_built_path(dir, file, custom_extension="")
-
-        content = {
-            "source": file,
-            "href": href,
-            "content": markdown.markdown(
-                loaded.content, extensions=MARKDOWN_EXTENSIONS
-            ),
+        template = jinja.get_template(data["template"])
+        jinja_vars = {
+            **data,  # e.g. "title", "url", etc.
+            **global_vars,  # e.g. "posts", "pages", etc.
         }
-
-        frontmatter_fields = REQUIRED_FRONTMATTER[content_type]
-        for field in frontmatter_fields:
-            if field not in front_matter:
-                raise MissingFrontmatter(
-                    f"Failed to load {file}: missing required frontmatter field {field}"
-                )
-            content[field] = front_matter[field]
-
-        contents.append(content)
-        print(f"Loaded content {file}")
-
-    CONTENT[content_type] = contents
-
-
-def copy_file(src, dest):
-    create_parent_dirs(dest)  # Can't copy unless its dir exists
-    shutil.copy(src, dest)
-
-
-def copy_assets(dirs):
-    for dir in dirs:
-        asset_dir = os.path.join(dir, "assets/")
-        print(f"Copying assets from {asset_dir}")
-        for asset in collect_files(asset_dir):
-            built_path = get_built_path(dir, asset)
-            dest = os.path.join(BUILD_DIR, built_path)
-            copy_file(asset, dest)
-
-
-def build():
-    prepare_build_dir()
-
-    # First, load the content in memory. We can't render any content until all of it
-    # has been loaded because we need them to populate the global variables.
-    load_content_files("index")
-    load_content_files("pages")
-    load_content_files("posts")
-
-    # Next, it's helpful to sort the content so we can show them in order
-    CONTENT["posts"].sort(key=lambda post: post["date"])
-
-    global_vars = {**CONTENT}
-
-    # Copy the assets
-    copy_assets([CONTENT_DIR, THEME_DIR])
-
-    # Render all the content
-    for content_type in ["index", "pages", "posts"]:
-        template = jinja.get_template(f"{content_type}.html.j2")
-        for content in CONTENT[content_type]:
-            build_content(template, content, global_vars)
-
-    # Copy misc Cloudflare files
-    src = "_redirects"
-    dest = os.path.join(BUILD_DIR, src)
-    print(f"Copying {dest}")
-    copy_file(src, dest)
+        render_template(template, jinja_vars, path)
 
     print("Build finished")
-
-
-if __name__ == "__main__":
-    build()

@@ -1,7 +1,8 @@
 ---
+template: "post.html.j2"
 title: "A Beginner's Guide to x86 Assembly, Part 1 of 2"
-summary: "In this two-part series we will be implementing a Reverse Polish notation (RPN) calculator in bare x86 assembly from the ground up."
 date: 2017-02-12
+summary: "In this two-part series we will be implementing a Reverse Polish notation (RPN) calculator in bare x86 assembly from the ground up."
 ---
 
 This was originally submitted to Reddit [here](https://www.reddit.com/r/programming/comments/9cx127/a_beginners_guide_to_x86_assembly_writing_a/).

@@ -1,7 +1,8 @@
 ---
+template: "post.html.j2"
 title: "A Beginner's Guide to x86 Assembly, Part 2 of 2"
-summary: "In the final part of this series we will use our new knowledge to implement the calculator from the ground up."
 date: 2017-02-13
+summary: "In the final part of this series we will use our new knowledge to implement the calculator from the ground up."
 ---
 
 In the [previous part of this series](/2017/beginners-assembly-part1) the main topics of x86 assembly programming such as the call stack x86 calling convention were introduced. In this final part we will apply that knowledge to write our RPN calculator.
