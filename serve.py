@@ -2,8 +2,11 @@
 
 import http.server
 import socketserver
+import os.path
 
 address = ("0.0.0.0", 8080)
+
+BUILD_DIR = "./build"
 
 
 def is_assets_dir(path):
@@ -21,15 +24,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         We want to do this because Cloudflare Pages does this, and it's nice to have a
         local server which does this too so we can identify any incorrect links.
-
-        The server already translates requests to / to index.html, so no need to do
-        anything there. We also serve requests to /assets/ as-is without rewriting.
-        This is technically not how Cloudflare does it (they check if the requested
-        file exists and doesn't have a .html extension and serves it as-is if so) but
-        it makes implementation easier for me.
         """
-        if path != "/" and not is_assets_dir(path):
-            path += ".html"
+        # No need to do anything for /, the server already serves index.html
+        # If the requested path doesn't have .html, but the file exists with the
+        # .html suffix, then rewrite to serve that
+        if path != "/" and not path.endswith(".html"):
+            if os.path.isfile(BUILD_DIR + path + ".html"):
+                path += ".html"
+
         return super().translate_path(path)
 
 
