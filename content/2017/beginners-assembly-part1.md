@@ -136,7 +136,7 @@ In this article, we will only be using the following two system calls[^1]: `writ
 The call stack is a data structure that stores information about each function call. Each function call has its own section in the stack called a "frame," which stores some information about the current function call, such as the local variables of that function and the return address (where the program should jump to once the function is done executing).
 
 <figure>
-  <img src="/assets/images/2017/beginners-assembly/callstack.png">
+  <img src="/images/2017/beginners-assembly/callstack.png">
   <figcaption>
     <p>Fig. 1: The call stack</p>
   </figcaption>
@@ -202,21 +202,21 @@ In order to be called, a subroutine must:
 4. Save the *callee-saved registers* by pushing them onto the stack. These are: `ebx`, `edi`, and `esi`. You do not have to save any registers you are not planning on modifying.
 
 <figure>
-  <img src="/assets/images/2017/beginners-assembly/callee-rules-step1.png">
+  <img src="/images/2017/beginners-assembly/callee-rules-step1.png">
   <figcaption>
     <p>Fig. 2a: The stack after step 1</p>
   </figcaption>
 </figure>
 
 <figure>
-  <img src="/assets/images/2017/beginners-assembly/callee-rules-step2.png">
+  <img src="/images/2017/beginners-assembly/callee-rules-step2.png">
   <figcaption>
     <p>Fig. 2b: The stack after step 2</p>
   </figcaption>
 </figure>
 
 <figure>
-  <img src="/assets/images/2017/beginners-assembly/callee-rules-step4.png">
+  <img src="/images/2017/beginners-assembly/callee-rules-step4.png">
   <figcaption>
     <p>Fig. 2c: The stack after step 4</p>
   </figcaption>
