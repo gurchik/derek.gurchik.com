@@ -43,7 +43,7 @@ MARKDOWN_EXTENSIONS = [
     # but I'm choosing to not install that right now.
 ]
 REQUIRED_FRONTMATTER = {
-    "index.html.j2": [],
+    "index.html.j2": ["title"],
     "page.html.j2": ["title"],
     "post.html.j2": ["title", "date"],
 }

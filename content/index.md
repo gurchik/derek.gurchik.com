@@ -1,5 +1,6 @@
 ---
 template: "index.html.j2"
+title: "Derek Gurchik's website"
 ---
 
 ## Hi, I'm Derek Gurchik
@@ -10,5 +11,6 @@ Outside of work, I am studying and practicing film photography. I'm inspired by 
 
 ### Links
 
-* Contact me at `blog @ (my last name) .com`
+* Contact me at: `blog @ (my last name) .com`
 * [My homelab](/homelab)
+* A Beginner's Guide to x86 Assembly - [Part 1](/2017/beginners-assembly-part1), [Part 2](/2017/beginners-assembly-part2)
