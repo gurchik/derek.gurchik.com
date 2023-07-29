@@ -410,6 +410,6 @@ Here are some features you can add for additional practice:
 
 ## Additional reading
 
-* [University of Virginia's Guide to x86 Assembly](http://www.cs.virginia.edu/~evans/cs216/guides/x86.html) -- Goes more into depth on many of the topics covered here, including more information on each of the most common x86 instructions. A great reference for the most common x86 instructions as well.
-* [The Art of Picking Intel Registers](http://www.swansontec.com/sregisters.html) -- While most of the x86 registers are general-purpose, many of the registers have a historical meaning. Following those conventions can improve code readability, and as an interesting side benefit, will even slightly optimize the size of your binaries.
+* [University of Virginia's Guide to x86 Assembly](https://www.cs.virginia.edu/~evans/cs216/guides/x86.html) -- Goes more into depth on many of the topics covered here, including more information on each of the most common x86 instructions. A great reference for the most common x86 instructions as well.
+* [The Art of Picking Intel Registers](https://www.swansontec.com/sregisters.html) -- While most of the x86 registers are general-purpose, many of the registers have a historical meaning. Following those conventions can improve code readability, and as an interesting side benefit, will even slightly optimize the size of your binaries.
 * [NASM: Intel x86 Instruction Reference](http://www.posix.nl/linuxassembly/nasmdochtml/nasmdoca.html) - a full reference to all the obscure x86 instructions.

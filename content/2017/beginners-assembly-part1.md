@@ -33,7 +33,7 @@ You simply need the GNU linker `ld` from `binutils`, which is pre-installed on m
 $ sudo apt-get install binutils nasm
 ```
 
-I would also recommend you keep an [ASCII table](http://www.asciitable.com/) handy.
+I would also recommend you keep an [ASCII table](https://www.asciitable.com/) handy.
 
 
 ## Hello world
@@ -68,7 +68,7 @@ _start:
     int 0x80
 ```
 
-The comments should explain the general strucure, but you are probably a bit confused on how it works. If you are confused about the instructions or the registers used, you can reference [University of Virginia's Guide to x86 Assembly](http://www.cs.virginia.edu/~evans/cs216/guides/x86.html) for a list of registers and common instructions. Once we discuss system calls this should hopefully make even more sense.
+The comments should explain the general strucure, but you are probably a bit confused on how it works. If you are confused about the instructions or the registers used, you can reference [University of Virginia's Guide to x86 Assembly](https://www.cs.virginia.edu/~evans/cs216/guides/x86.html) for a list of registers and common instructions. Once we discuss system calls this should hopefully make even more sense.
 
 To assemble the assembly file into an object file, then to link the object file into an executable, run:
 
@@ -122,7 +122,7 @@ edx = arg3
 
 In this article, we will only be using the following two system calls[^1]: `write()`, which writes a string to a file or stream (in our case, to standard out and standard error), and `exit()`, to exit the program:
 
-[^1]: If interested you may find a reference for more Linux system calls [here](http://syscalls.kernelgrok.com/).
+[^1]: If interested you can find a reference for more Linux system calls [here](https://web.archive.org/web/20200109194151/https://syscalls.kernelgrok.com/).
 
 * `exit` (syscall number `0x01`): Exits the program. Arguments:
   * `error code` - set to 0 to indicate the program ended without errors, and use any other number (such as 1) to instead indicate an error occurred
@@ -360,10 +360,10 @@ _start:
 
 That is the end of Part 1. Believe it or not, we have covered all the main x86 topics you will need to write basic x86 programs! In the next article we will apply this knowledge to write our RPN calculator. Now that we have all the introductory material and theory out of the way, Part 2 will be focusing entirely on the code. The functions we write will be much longer and will even have to use some local variables as well.
 
-If you'd like to see the complete program up to this point click [here](https://gist.github.com/gurchik/79dca38ccc2a5e263d0635f1b7737ec9). Thanks for reading! I'll see you in [Part 2](/2017/beginners-assembly-part2/).
+If you'd like to see the complete program up to this point click [here](https://gist.github.com/gurchik/79dca38ccc2a5e263d0635f1b7737ec9). Thanks for reading! I'll see you in [Part 2](/2017/beginners-assembly-part2).
 
 ## Additional reading
 
-* [University of Virginia's Guide to x86 Assembly](http://www.cs.virginia.edu/~evans/cs216/guides/x86.html) -- Goes more into depth on many of the topics covered here, including more information on each of the most common x86 instructions. A great reference for the most common x86 instructions as well.
-* [The Art of Picking Intel Registers](http://www.swansontec.com/sregisters.html) -- While most of the x86 registers are general-purpose, many of the registers have a historical meaning. Following those conventions can improve code readability, and as an interesting side benefit, will even slightly optimize the size of your binaries.
+* [University of Virginia's Guide to x86 Assembly](https://www.cs.virginia.edu/~evans/cs216/guides/x86.html) -- Goes more into depth on many of the topics covered here, including more information on each of the most common x86 instructions. A great reference for the most common x86 instructions as well.
+* [The Art of Picking Intel Registers](https://www.swansontec.com/sregisters.html) -- While most of the x86 registers are general-purpose, many of the registers have a historical meaning. Following those conventions can improve code readability, and as an interesting side benefit, will even slightly optimize the size of your binaries.
 * [NASM: Intel x86 Instruction Reference](http://www.posix.nl/linuxassembly/nasmdochtml/nasmdoca.html) - a full reference to all the obscure x86 instructions.
